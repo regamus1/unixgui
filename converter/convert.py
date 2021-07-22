@@ -1,15 +1,13 @@
 import os
 import sys
 
-from PyQt5.QtGui import QIcon, QKeySequence
-from PyQt5.QtCore import (QCoreApplication, QSettings, Qt)
+from PyQt5.QtCore import (QSettings, Qt)
 from PyQt5.QtWidgets import (
         QAbstractItemView, QApplication, QFileDialog, QLabel,
         QLineEdit, QMainWindow, QMessageBox, QPushButton, QShortcut, QTabWidget,
         QToolButton, QWidget
         )
 
-import converter as ffmc
 from converter import utils
 from converter import config
 from converter import progress
@@ -101,11 +99,8 @@ class MainWindow(QMainWindow):
                 config.default_ffmpeg_cmd)
 
         extraformats_video = (settings.value('extraformats_video') or [])
-        videocodecs = (settings.value('videocodecs') or config.video_codecs)
-        audiocodecs = (settings.value('audiocodecs') or config.audio_codecs)
 
-        self.audiovideo_tab.fill_video_comboboxes(videocodecs,
-                audiocodecs, extraformats_video)
+        self.audiovideo_tab.fill_video_comboboxes(extraformats_video)
 
     def get_current_tab(self):
         for i in self.tabs:
