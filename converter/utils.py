@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import (
 
 
 def duration_in_seconds(duration):
-    duration = duration.split('.')[0] # get rid of milliseconds
+    duration = duration.split('.')[0]
     hours, mins, secs = [int(i) for i in duration.split(':')]
     return secs + (hours * 3600) + (mins * 60)
 
@@ -68,18 +68,6 @@ def create_paths_list(
     return conversion_list
 
 def update_cmdline_text(command, _filter, regex, add, gindex1, gindex2):
-    """
-    Update and return the command line text by adding, removing or edditing a
-    ffmpeg filter based on the given regular expression.
-
-    Keyword arguments:
-    command  -- initial command text (string)
-    _filter  -- ffmpeg filter to add or edit in command (string)
-    regex    -- regex to search in command
-    add      -- if True, add filter to command, else filter must be removed
-    gindex1  -- group index of the first group before filter group in regex
-    gindex2  -- group index of the first group after filter group in regex
-    """
     regex2 = r'(-vf "[^"]*)"'
     regex3 = r'-vf +([^ ]+)'
 

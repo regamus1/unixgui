@@ -5,7 +5,6 @@ import signal
 import threading
 import subprocess
 import shlex
-import logging
 
 from PyQt5.QtCore import pyqtSignal, QTimer
 from PyQt5.QtGui import QTextCursor
@@ -54,24 +53,22 @@ class Progress(QDialog):
         hlayout2 = utils.add_to_layout('h', line)
         hlayout3 = utils.add_to_layout('h', self.frame)
         hlayout4 = utils.add_to_layout('h', None, self.cancelQPB)
-        vlayout = utils.add_to_layout(
-                'v', hlayout1, self.nowQPBar, hlayout2, hlayout3, hlayout4)
+        vlayout = utils.add_to_layout('v', hlayout1, self.nowQPBar, hlayout2, hlayout3, hlayout4)
         self.setLayout(vlayout)
 
         self.cancelQPB.clicked.connect(self.reject)
         self.file_converted_signal.connect(self.next_file)
         self.update_text_edit_signal.connect(self.update_text_edit)
 
-        self.resize(484, 190)
-        self.setWindowTitle('Media Converter - ' + self.tr('Conversion'))
+        self.resize(500, 200)
+        self.setWindowTitle(self.tr('Conversion Status'))
 
         if not test:
             self.get_data()
             QTimer.singleShot(0, self.manage_conversions)
 
     def get_data(self):
-        if self._type == 'AudioVideo':
-            self.cmd = self.tab.commandQLE.text()
+        self.cmd = self.tab.commandQLE.text()
 
     def resize_dialog(self):
         height = 190 if self.frame.isVisible() else 450
@@ -109,27 +106,21 @@ class Progress(QDialog):
         if not self.files:
             QDialog.accept(self)
             return
-        if self._type == 'AudioVideo':
-            self.process.send_signal(signal.SIGSTOP)
+        self.process.send_signal(signal.SIGSTOP)
         self.running = False
         reply = QMessageBox.question(
-                self,
-                'Media Converter - ' + self.tr('Cancel Conversion'),
+                self, self.tr('Cancel Conversion'), 
                 self.tr('Are you sure you want to cancel conversion?'),
                 QMessageBox.Yes|QMessageBox.Cancel
                 )
         if reply == QMessageBox.Yes:
-            if self._type == 'AudioVideo':
-                self.process.kill()
+            self.process.kill()
             self.running = False
             self.thread.join()
             QDialog.reject(self)
         if reply == QMessageBox.Cancel:
             self.running = True
-            if self._type == 'AudioVideo':
-                self.process.send_signal(signal.SIGCONT)
-            else:
-                self.manage_conversions()
+            self.process.send_signal(signal.SIGCONT)
 
     def convert_a_file(self):
         if not self.files:
@@ -150,9 +141,8 @@ class Progress(QDialog):
             return
 
         def convert():
-            if self._type == 'AudioVideo':
-                conv_func = self.convert_video
-                params = (from_file, to_file, self.cmd)
+            conv_func = self.convert_video
+            params = (from_file, to_file, self.cmd)
 
             if conv_func(*params):
                 self.ok += 1
@@ -198,16 +188,8 @@ class Progress(QDialog):
                 self.update_text_edit_signal.emit(myline)
                 final_output += myline
                 myline = ''
+
         self.update_text_edit_signal.emit('\n\n')
-
         return_code = self.process.poll()
-
-        log_data = {
-                'command' : convert_cmd,
-                'returncode' : return_code,
-                'type' : 'VIDEO'
-                }
-        log_lvl = logging.info if return_code == 0 else logging.error
-        log_lvl(final_output, extra=log_data)
 
         return return_code == 0
