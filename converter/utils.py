@@ -26,7 +26,6 @@ def find_presets_file(fname, lookup_dirs, lookup_virtenv):
     possible_dirs = os.environ.get(
             "XDG_DATA_DIRS", ":".join(lookup_dirs)
             ).split(":")
-    # for virtualenv installations
     posdir = os.path.realpath(
             os.path.join(os.path.dirname(sys.argv[0]), '..', lookup_virtenv))
     if not posdir in possible_dirs:
@@ -37,7 +36,6 @@ def find_presets_file(fname, lookup_dirs, lookup_virtenv):
         if os.path.exists(_file):
             return _file
 
-    # when program is not installed or running from test_dialogs.py
     return os.path.dirname(os.path.realpath(__file__)) + '/../share/' + fname
 
 def create_paths_list(
@@ -56,8 +54,6 @@ def create_paths_list(
             y = _dir2 + '/~' + _name2
 
         dummy.append(y)
-        # Add quotations to paths in order to avoid error in special
-        # cases such as spaces or special characters.
         _file = '"' + _file + '"'
         y = '"' + y + '"'
 
@@ -83,16 +79,11 @@ def update_cmdline_text(command, _filter, regex, add, gindex1, gindex2):
             group1 = search.groups()[gindex1].strip()
             group2 = search.groups()[gindex2].strip()
             if group1 and group2:
-                # the filter is between 2 other filters
-                # remove it and leave a comma
                 command = re.sub(regex, ',', command)
             else:
-                # remove filter
                 command = re.sub(regex, _filter, command)
-                # add a space between -vf and filter if needed
                 command = re.sub(r'-vf([^ ])', r'-vf \1', command)
                 if not group1 and not group2:
-                    # remove -vf option
                     command = re.sub(r'-vf *("\s*"){0,1}', '', command)
     elif re.search(regex2, command):
         command = re.sub(regex2, r'\1,{0}"'.format(_filter), command)

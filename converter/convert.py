@@ -190,5 +190,6 @@ def main():
     app.setApplicationName('FF Multi Converter')
 
     converter = MainWindow()
+    converter.resize(600, 400)
     converter.show()
     app.exec_()

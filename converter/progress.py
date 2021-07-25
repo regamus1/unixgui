@@ -12,9 +12,7 @@ from PyQt5.QtWidgets import (
         QApplication, QDialog, QFrame, QLabel, QPushButton, QProgressBar,
         QMessageBox, QTextEdit
         )
-
 from converter import utils
-
 
 class Progress(QDialog):
     file_converted_signal = pyqtSignal()
@@ -114,7 +112,7 @@ class Progress(QDialog):
                 QMessageBox.Yes|QMessageBox.Cancel
                 )
         if reply == QMessageBox.Yes:
-            self.process.kill()
+            self.process.send_signal(signal.SIGKILL)
             self.running = False
             self.thread.join()
             QDialog.reject(self)

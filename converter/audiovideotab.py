@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import (
         QWidget, QComboBox, QLineEdit, QLabel,
-        QSpacerItem, QFrame, QToolButton
+        QSpacerItem, QToolButton
         )
 
 from converter import utils
@@ -29,13 +29,8 @@ class AudioVideoTab(QWidget):
         self.embedQTB = QToolButton()
         self.embedQTB.setText("...")
 
-        line = QFrame()
-        line.setFrameShape(QFrame.HLine)
-        line.setFrameShadow(QFrame.Sunken)
-        hlayout3 = utils.add_to_layout('h', line)
-
-        final_layout = utils.add_to_layout(
-                'v', hlayout1, hlayout3)
+        
+        final_layout = utils.add_to_layout('v', hlayout1)
         self.setLayout(final_layout)
 
     def clear(self):
