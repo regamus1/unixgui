@@ -115,7 +115,7 @@ class MainWindow(QMainWindow):
     def filesList_add(self):
  
         fnames = QFileDialog.getOpenFileNames(self, 'Media Converter - ' +
-                self.tr('Choose File'), config.home,
+                self.tr('Choose File'), config.videos,
                 options=QFileDialog.HideNameFilterDetails)[0]
 
         if fnames:
@@ -152,7 +152,7 @@ class MainWindow(QMainWindow):
             output = QFileDialog.getExistingDirectory(
                     self, 'Media Converter - ' +
                     self.tr('Choose output destination'),
-                    config.home)
+                    config.output)
             if output:
                 self.toQLE.setText(output)
 
